@@ -1,0 +1,63 @@
+let listaDeNumeroSorteados = [];
+let numeroLimite = 10;
+let numeroSecreto = geraNumeroAleatorio();
+let tentativas = 1;
+
+function exibirTextoNaTela(tag, texto) {
+    let campo = document.querySelector(tag);
+    campo.innerHTML = texto;
+    responsiveVoice.speak(texto, 'Brazilian Portuguese Female',{rate:1.2})
+};
+
+function mensagemInicial(){
+    exibirTextoNaTela('h1','Jogo do Numero Secreto');
+    exibirTextoNaTela('p','Escolha um numero de 1 a 10');
+}
+mensagemInicial()
+
+
+function verificarChute(){
+    let chute = document.querySelector('input').value;
+    if( chute == numeroSecreto){
+        exibirTextoNaTela('h1', 'Voce acertouu');
+        let palavraTentativa = tentativas > 1 ? 'tentativas' : 'tentativa';
+        let mensagemTentativas =`voce descobriu o numero secreto com ${tentativas} ${palavraTentativa}!`;
+        exibirTextoNaTela('p', mensagemTentativas);
+        document.getElementById('reiniciar').removeAttribute('disabled');
+    }else{
+        if(chute > numeroSecreto){
+            exibirTextoNaTela('p','o numero secreto e menor');
+        }else{
+            exibirTextoNaTela('P','o numero secreto e maior');
+        } 
+        tentativas++
+        limparCampo();
+    }
+};
+
+function geraNumeroAleatorio() {
+    let numeroEscolhido = parseInt(Math.random() * numeroLimite + 1);
+    let quantidadeDeNumeroNaLista = listaDeNumeroSorteados.length;
+
+    if (quantidadeDeNumeroNaLista == numeroLimite) {
+        listaDeNumeroSorteados = [];
+    }
+    if (listaDeNumeroSorteados.includes(numeroEscolhido)) {
+        return geraNumeroAleatorio();
+    }else{
+        listaDeNumeroSorteados.push(numeroEscolhido);
+        console.log(listaDeNumeroSorteados)
+        return numeroEscolhido;
+    }
+};
+function limparCampo() {
+    chute = document.querySelector('input');
+    chute.value = '';
+}
+function reiniciarJogo() {
+    numeroSecreto = geraNumeroAleatorio ();
+    limparCampo();
+    tentativas = 1;
+    mensagemInicial();
+    document.getElementById('reiniciar').setAttribute('disabled', true);
+}
